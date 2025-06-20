@@ -1,16 +1,16 @@
 <h2>Agende seu horário</h2>
 <form id="form-agendamento">
-  <label>Título do agendamento:</label><br>
-  <input type="text" name="titulo" required><br><br>
+  <label for="titulo">Título do agendamento:</label><br>
+  <input type="text" id="titulo" name="titulo" required><br><br>
 
-  <label>Descrição:</label><br>
-  <textarea name="descricao"></textarea><br><br>
+  <label for="descricao">Descrição:</label><br>
+  <textarea id="descricao" name="descricao"></textarea><br><br>
 
-  <label>Data e hora de início:</label><br>
-  <input type="datetime-local" name="inicio" required><br><br>
+  <label for="inicio">Data e hora de início:</label><br>
+  <input type="datetime-local" id="inicio" name="inicio" required><br><br>
 
-  <label>Data e hora de término:</label><br>
-  <input type="datetime-local" name="fim" required><br><br>
+  <label for="fim">Data e hora de término:</label><br>
+  <input type="datetime-local" id="fim" name="fim" required><br><br>
 
   <button type="submit">Agendar</button>
 </form>
@@ -24,11 +24,12 @@
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
+    // Captura os valores e formata como string ISO correta (com segundos)
     const dados = {
-      titulo: form.titulo.value,
-      descricao: form.descricao.value,
-      inicio: form.inicio.value,
-      fim: form.fim.value
+      titulo: form.titulo.value.trim(),
+      descricao: form.descricao.value.trim(),
+      inicio: new Date(form.inicio.value).toISOString(),
+      fim: new Date(form.fim.value).toISOString()
     };
 
     const url = "https://script.google.com/macros/s/AKfycbzjEruHBSOfKRReNhWXHglh6iP2o2YifnCON5F5HSju91wfhmG_YEogg01M3-eae3qpSQ/exec";
@@ -44,12 +45,15 @@
 
       if (resultado.status === "sucesso") {
         resposta.innerText = "✅ Agendamento realizado com sucesso!";
+        resposta.style.color = "green";
         form.reset();
       } else {
         resposta.innerText = "⚠️ Erro: " + resultado.mensagem;
+        resposta.style.color = "orange";
       }
     } catch (error) {
       resposta.innerText = "❌ Erro ao conectar com o servidor. Tente novamente.";
+      resposta.style.color = "red";
     }
   });
 </script>
