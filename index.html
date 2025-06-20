@@ -1,0 +1,55 @@
+<h2>Agende seu horário</h2>
+<form id="form-agendamento">
+  <label>Título do agendamento:</label><br>
+  <input type="text" name="titulo" required><br><br>
+
+  <label>Descrição:</label><br>
+  <textarea name="descricao"></textarea><br><br>
+
+  <label>Data e hora de início:</label><br>
+  <input type="datetime-local" name="inicio" required><br><br>
+
+  <label>Data e hora de término:</label><br>
+  <input type="datetime-local" name="fim" required><br><br>
+
+  <button type="submit">Agendar</button>
+</form>
+
+<div id="resposta" style="margin-top: 15px; font-weight: bold;"></div>
+
+<script>
+  const form = document.getElementById("form-agendamento");
+  const resposta = document.getElementById("resposta");
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const dados = {
+      titulo: form.titulo.value,
+      descricao: form.descricao.value,
+      inicio: form.inicio.value,
+      fim: form.fim.value
+    };
+
+    const url = "https://script.google.com/macros/s/AKfycbw4bIoFCdWDcKbBLdplDJot5u4UxeWrDabFTg2-1nfpsGnmH-hPe1Rau9HMYN53Vrq6/exec";
+
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(dados),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      const resultado = await res.json();
+
+      if (resultado.status === "sucesso") {
+        resposta.innerText = "✅ Agendamento realizado com sucesso!";
+        form.reset();
+      } else {
+        resposta.innerText = "⚠️ Erro: " + resultado.mensagem;
+      }
+    } catch (error) {
+      resposta.innerText = "❌ Erro ao conectar com o servidor. Tente novamente.";
+    }
+  });
+</script>
